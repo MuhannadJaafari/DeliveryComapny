@@ -29,7 +29,6 @@ public class Truck {
                 if (indexOfDeliveryPoint != -1) {
                     if (newState.checkIfPackageExists(indexOfDeliveryPoint)) {
                         newState.servePackage(indexOfDeliveryPoint);
-                        this.setCost(newState);
                     }
                 } else {
                     int index = newState.getCityMap().checkIfPackageExists(newState.getTruckPosition());
@@ -40,8 +39,9 @@ public class Truck {
                         if(!packageNewState.checkIfVisited())
                             this.pushState(packageNewState);
                     }
-                    this.setCost(newState);
+
                 }
+                this.setCost(newState);
                 if(!newState.checkIfVisited())
                     this.pushState(newState);
             }
