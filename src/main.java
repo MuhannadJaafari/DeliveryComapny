@@ -18,6 +18,7 @@ public class main {
         deliveryCompany.setPackagesDeliveryPoints(fileReader.getListOfPackagesDeliveringPoint());
         deliveryCompany.setRestOfMaze(fileReader.getRestOfMaze());
         deliveryCompany.setTruckType(AlgorithmChooser.get());
+
         deliveryCompany.start();
 //        Company.DeliveryCompany.getInstance().setStartingPoint(startingPoint);
 //        Company.DeliveryCompany.getInstance().setPackagesStartingPoints(listOfPackagesStartingPoint);
