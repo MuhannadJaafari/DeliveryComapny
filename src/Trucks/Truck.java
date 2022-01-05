@@ -21,6 +21,7 @@ public class Truck {
     }
 
     public void move(State currentState) {
+        DeliveryCompany.getInstance().numberOfNodes++;
         for (char c : this.moves) {
             if (currentState.checkIfValid(c)) {
                 State newState = currentState.makeChildState();
@@ -34,8 +35,8 @@ public class Truck {
                     int index = newState.getCityMap().checkIfPackageExists(newState.getTruckPosition());
                     if (index != -1 && !newState.checkIfPackageIsServed(index) && !newState.checkIfPackageExists(index)) {
                         State packageNewState = newState.clone();
-                        this.setCost(packageNewState);
                         packageNewState.addPackage(index);
+                        this.setCost(packageNewState);
                         if(!packageNewState.checkIfVisited())
                             this.pushState(packageNewState);
                     }

@@ -5,6 +5,7 @@ import Company.DeliveryCompany;
 import DataStructures.Pair;
 import Services.DistanceCalculator;
 import Trucks.Truck;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class State implements Cloneable {
     private int cost;
     private List<Integer> packages, servedPackages;
     private State parentState;
+    private int aStarCost;
     public int indexOfNewlyTakenPackage, indexOfNewlyDeliveredPackage;
     private Pair<Integer, Integer> truckPosition;
 
@@ -26,14 +28,14 @@ public class State implements Cloneable {
 
     public void solve() {
         if (this.isFinished()) {
-            if (DeliveryCompany.getInstance().minCost > this.cost) {
-                DeliveryCompany.getInstance().minCost = this.cost;
-                DeliveryCompany.getInstance().finalState = this;
-            }
+            DeliveryCompany.getInstance().minCost = this.cost;
+            DeliveryCompany.getInstance().finalState = this;
             return;
         }
+        if (DeliveryCompany.getInstance().minCost != -1)
+            return;
         this.expand();
-        while(DeliveryCompany.getInstance().truck.hasStates()){
+        while (DeliveryCompany.getInstance().truck.hasStates()) {
             Company.DeliveryCompany.getInstance().truck.getNewState().solve();
         }
     }
@@ -51,6 +53,7 @@ public class State implements Cloneable {
     public void setTruckPosition(Pair<Integer, Integer> truckPosition) {
         this.truckPosition = truckPosition;
     }
+
     public void setCost(int cost) {
         this.cost = cost;
     }
@@ -60,17 +63,26 @@ public class State implements Cloneable {
         this.indexOfNewlyTakenPackage = indexOfPackage;
         this.packages.add(indexOfPackage);
     }
+
     public void removePackage(int value) {
         for (int i = 0; i < this.packages.size(); i++) {
             if (this.packages.get(i) == value)
                 this.packages.remove(i);
         }
     }
+    public void setAStartCost(int cost){
+        this.aStarCost = cost;
+    }
+    public int getAStarCost() {
+        return this.aStarCost;
+    }
+
     public void servePackage(int indexOfDeliveryPoint) {
         this.indexOfNewlyDeliveredPackage = indexOfDeliveryPoint;
         this.removePackage(indexOfDeliveryPoint);
         this.servedPackages.add(indexOfDeliveryPoint);
     }
+
     public State makeChildState() {
         State newState = this.clone();
         newState.parentState = this;
@@ -80,16 +92,20 @@ public class State implements Cloneable {
     }
 
     public boolean isFinished() {
-        return this.getNumberOfDeliveredPackages() == DeliveryCompany.getInstance().cityMap.packagesDeliveryPoints.size() && this.truckPosition.equals(this.cityMap.startingPoint);
+        return this.getNumberOfDeliveredPackages() == DeliveryCompany.getInstance().cityMap.packagesDeliveryPoints.size()
+                && this.truckPosition.equals(this.cityMap.startingPoint);
     }
+
     public boolean checkIfVisited() {
         return DeliveryCompany.getInstance().checkIfVisited(this);
     }
+
     public boolean checkIfValid(char c) {
         int x = this.truckPosition.first() + DistanceCalculator.dx.get(c);
         int y = this.truckPosition.second() + DistanceCalculator.dy.get(c);
         return !this.cityMap.checkIfOutOfBounds(x, y) && !this.cityMap.checkIfCellIsBlock(x, y);
     }
+
     public boolean checkIfPackageExists(int index) {
         for (int indexOfPackagesPoint : this.packages) {
             if (indexOfPackagesPoint == index)
@@ -97,6 +113,7 @@ public class State implements Cloneable {
         }
         return false;
     }
+
     public boolean checkIfPackageIsServed(int index) {
         return this.servedPackages.contains(index);
     }
@@ -110,31 +127,40 @@ public class State implements Cloneable {
     public Pair<Integer, Integer> getTruckPosition() {
         return this.truckPosition;
     }
+
     public int getNumberOfDeliveredPackages() {
         return this.servedPackages.size();
     }
+
     public int getNumberOfPackages() {
         return this.packages.size();
     }
+
     public int getCost() {
         return this.cost;
     }
-    public CityMap getCityMap(){
+
+    public CityMap getCityMap() {
         return this.cityMap;
     }
+
     public List<Integer> getPackages() {
         return this.packages;
     }
+
     public List<Integer> getServedPackages() {
         return this.servedPackages;
     }
-    public State getParentState(){
+
+    public State getParentState() {
         return this.parentState;
     }
+
     public int getCostOfParentState() {
         if (this.parentState == null) return 0;
         else return this.parentState.cost;
     }
+
     public int getParentPackagesSize() {
         if (this.parentState == null) return 0;
         else return this.parentState.packages.size();

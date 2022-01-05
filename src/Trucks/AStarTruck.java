@@ -1,11 +1,16 @@
 package Trucks;
 import Heuristics.Heuristic;
+import Services.CmpAStar;
 import State.State;
+
+import java.util.PriorityQueue;
 
 public class AStarTruck extends Truck {
     Heuristic heuristic;
+
     public AStarTruck(Heuristic heuristic){
         super();
+        this.states = new PriorityQueue<State>(new CmpAStar());
         this.heuristic = heuristic;
     }
     //    public boolean checkAStar(State state) {
@@ -21,6 +26,7 @@ public class AStarTruck extends Truck {
 //        return false;
 //    }
     public void setCost(State state) {
-        state.setCost(state.getCostOfMovingToNewPosition() + this.heuristic.calc(state));
+        state.setCost(state.getCostOfMovingToNewPosition());
+        state.setAStartCost(state.getCost() + this.heuristic.calc(state));
     }
 }

@@ -1,6 +1,7 @@
 package Heuristics;
 
 import Company.CityMap;
+import Company.DeliveryCompany;
 import DataStructures.Pair;
 import State.State;
 import Math.EuclideanDistance;

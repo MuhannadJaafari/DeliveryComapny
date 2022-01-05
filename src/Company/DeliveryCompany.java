@@ -11,13 +11,14 @@ import java.util.List;
 
 public class DeliveryCompany {
     private static DeliveryCompany deliveryCompany = null;
-    public int minCost = 1000;
+    public int minCost = -1;
     public State state;
     public CityMap cityMap;
     public Truck truck;
     public State finalState = null;
     public List<State> visitedStates = new LinkedList<State>();
     public TruckMover truckMover;
+    public int numberOfNodes = 0;
 
     private DeliveryCompany() {
         this.truckMover = new TruckMover();
@@ -51,6 +52,7 @@ public class DeliveryCompany {
     public void start() {
         this.state.solve();
         PathPrinter.print(this.finalState);
+        System.out.println("Number of nodes is " + this.numberOfNodes);
         System.out.println("Minimum Cost is " + this.minCost);
     }
 
